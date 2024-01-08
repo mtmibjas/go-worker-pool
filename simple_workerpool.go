@@ -16,8 +16,8 @@ func NewWorkerPool(workerCount int, jobsCount int) *Worker {
 	return &Worker{
 		WorkerCount: workerCount,
 		JobsCount:   jobsCount,
-		Jobs:        make(chan int),
-		Results:     make(chan int),
+		Jobs:        make(chan int, jobsCount),
+		Results:     make(chan int, jobsCount),
 	}
 }
 
@@ -28,7 +28,6 @@ func main() {
 	for w := 0; w < pool.WorkerCount; w++ {
 		go func(id int) {
 			for j := range pool.Jobs {
-
 				pool.Results <- j * 2
 				time.Sleep(time.Second)
 			}
@@ -36,9 +35,9 @@ func main() {
 	}
 
 	for j := 0; j < pool.JobsCount; j++ {
-		go func(j int) {
-			pool.Jobs <- j
-		}(j)
+		///go func(j int) {
+		pool.Jobs <- j
+		///	}(j)
 
 	}
 
